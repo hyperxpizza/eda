@@ -1,0 +1,7 @@
+{
+    "user": "edaDBuser",
+    "password": "edaDBpassword",
+    "port": 5432,
+    "name": "edaDB",
+    "host": "127.0.0.1"
+}

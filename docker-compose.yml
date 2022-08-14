@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: eda-zookeeper
+    env_file:
+      - zookeeper.env
+    ports:
+      - '2181:2181'
+    restart: always
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: eda-broker
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper
+    env_file:
+      - kafka.env
+    restart: always 
+
+  postgres:
+    build: ./postgres
+    container_name: eda-postgres
+    env_file:
+      - postgres.env
+    volumes:
+      - data:/var/lib/postgresql/data
+    ports: 
+      - '5432:5432'
+    restart: always
+
+volumes:
+  data:
