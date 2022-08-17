@@ -69,7 +69,6 @@ func (c *Consumer) Run() {
 				if e.Code() == kafka.ErrAllBrokersDown {
 					return
 				}
-
 			}
 		}
 	}

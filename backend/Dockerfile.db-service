@@ -1,0 +1,24 @@
+FROM golang:1.18-alpine
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+COPY postgresConfig.json consumer.properties ./
+RUN go mod download
+
+RUN mkdir db-service
+RUN mkdir utils
+
+COPY /db-service ./db-service
+COPY /utils ./utils
+
+RUN apk add build-base librdkafka-dev pkgconf tree
+RUN go build -tags musl -o main ./db-service/cmd/db-service/main.go
+RUN tree
+CMD ["./main"]
+
+
+
+
+
+

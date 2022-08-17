@@ -31,6 +31,33 @@ services:
     ports: 
       - '5432:5432'
     restart: always
+    
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.api-gateway
+      args:
+        project: "api-gateway"
+        flags: "--producerConfig=producer.properties --port=8888"
+    ports:
+      - "8888:8888"
+    volumes:
+      - api-gateway-vol:/usr/src/api-gateway
+    depends_on:
+      - kafka
+      - zookeeper
+
+  db-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.db-service
+    volumes:
+      - db-service-vol:/usr/src/db-service
+    depends_on:
+      - postgres
+      - kafka
 
 volumes:
   data:
+  api-gateway-vol:
+  db-service-vol:

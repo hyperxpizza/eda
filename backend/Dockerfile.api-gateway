@@ -1,0 +1,24 @@
+FROM golang:1.18-alpine as builder
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+COPY producer.properties ./
+RUN go mod download
+
+RUN mkdir api-gateway
+RUN mkdir utils
+
+COPY /api-gateway ./api-gateway
+COPY /utils ./utils
+
+RUN apk add build-base librdkafka-dev pkgconf
+RUN go build -tags musl -o main ./api-gateway/cmd/api-gateway/main.go
+
+FROM busybox:latest
+WORKDIR /dist
+COPY --from=builder /build/main .
+COPY --from=builder /build/producer.properties .
+RUN chmod +x ./main
+ARG flags
+CMD ["./main ", ${flags}]
